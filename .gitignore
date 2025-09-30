@@ -1,0 +1,28 @@
+
+
+# node
+node_modules
+
+
+#ENV
+.env
+.env.test
+
+# MongoDB or binary folders
+mongodb-bin/
+mongodb-binaries/
+mongodb-data/
+*.pdb
+*.zip
+
+# logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+"frontend/MedCheck-Project" 
+"frontend/MedCheck-Project" 
