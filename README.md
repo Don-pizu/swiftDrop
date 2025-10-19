@@ -71,6 +71,20 @@ project-root/
 
 ## API Endpoints
 
+## API Endpoints
+
+## Auth Routes
+Method       Endpoint                 Description              Access
+POST    api/auth/register          Register a new user         Public
+POST    api/auth/verifyOtp         Verify OTP code             Public
+POST    api/auth/resendOtp         Resend OTP code             Public
+POST    api/auth/forgotPassword    Forgot password             Public
+POST    api/auth/reset-password/:token    Reset password       Public
+POST    api/auth/login             Login an existing user      Public
+GET     api/auth/allusers          Get all users route         Private(admin)
+GET     api/auth/me                Get user profile            Private
+PUT     api/auth/update            Update user                 Private
+
 
 
 ## Author name
