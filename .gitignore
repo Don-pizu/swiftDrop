@@ -24,5 +24,6 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-"frontend/MedCheck-Project" 
-"frontend/MedCheck-Project" 
+# Firebase
+config/swiftdrop-5f6b0-firebase-adminsdk-fbsvc-54a86ae399.json
+config/*firebase-adminsdk*.json

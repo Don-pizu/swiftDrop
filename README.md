@@ -11,6 +11,7 @@ It provides features for **user authentication, ride requests, driver onboarding
 **Authentication & Authorization**
   - JWT-based login/registration for riders & drivers.
   - OTP verification flow for secure onboarding.
+  - Role-based access control (User, Admin, Rider, Driver)
 
 **Ride Management**
   - Request, accept and cancel rides.
@@ -21,13 +22,22 @@ It provides features for **user authentication, ride requests, driver onboarding
   - Vehicle details (plate number, car model, license).
 
 **Payments**
-  - Integration-ready with Stripe/Paystack/Flutterwave.
+  - Ready for integration with Paystack, Flutterwave, or Stripe
+  - Fund, withdraw, and track wallet balance
+  - Confirm cash or online ride payments
 
 **Geolocation**
-  - Trip tracking with pickup & drop-off coordinates.
+  - Save pickup/drop-off coordinates
+  - Find nearby drivers (geo-matching system)
+
+**Notifications**
+  - Personalized and broadcast notifications
+  - Manage notification preferences
+  - Mark, resend, or delete notifications
 
 **Admin Dashboard (future-ready)**
   - Monitor drivers, riders, and completed trips.
+  - Perform CRUD operations on key resources
 
 
 ## Installation & Usage instructions\
@@ -84,6 +94,111 @@ POST    api/auth/login             Login an existing user      Public
 GET     api/auth/allusers          Get all users route         Private(admin)
 GET     api/auth/me                Get user profile            Private
 PUT     api/auth/update            Update user                 Private
+
+
+## KYC Routes
+| Method | Endpoint       | Description         | Access               |
+| ------ | -------------- | ------------------- | -------------------- |
+| POST   | `/api/kyc`     | Create KYC profile  | Rider, Driver, Admin |
+| GET    | `/api/kyc/:id` | Get specific KYC    | Rider, Driver, Admin |
+| GET    | `/api/kycs`    | Get all KYC records | Admin                |
+| PUT    | `/api/kyc/:id` | Update KYC          | Rider, Driver, Admin |
+| DELETE | `/api/kyc/:id` | Delete KYC          | Admin                |
+
+
+
+## Driver Routes
+| Method | Endpoint              | Description                      | Access               |
+| ------ | --------------------- | -------------------------------- | -------------------- |
+| POST   | `/api/drivers`        | Create driver profile            | Rider, Driver, Admin |
+| GET    | `/api/drivers/:id`    | Get a driver                     | Private              |
+| GET    | `/api/drivers`        | Get all drivers                  | Private              |
+| PUT    | `/api/drivers/:id`    | Update driver status or location | Rider, Driver, Admin |
+| GET    | `/api/drivers/nearby` | Find nearby drivers              | User, Admin          |
+| DELETE | `/api/drivers/:id`    | Delete driver                    | Admin                |
+
+
+## Ride Routes
+| Method | Endpoint                | Description        | Access               |
+| ------ | ----------------------- | ------------------ | -------------------- |
+| POST   | `/api/rides`            | Request a ride     | User, Rider, Admin   |
+| GET    | `/api/rides/:id`        | Get ride by ID     | User, Rider, Admin   |
+| GET    | `/api/rides`            | Get all rides      | Admin                |
+| PUT    | `/api/rides/:id/accept` | Accept ride        | Rider, Driver, Admin |
+| PUT    | `/api/rides/:id/status` | Update ride status | Rider, Driver, Admin |
+| DELETE | `/api/rides/:id/cancel` | Cancel ride        | User, Admin          |
+
+
+## Wallet Routes
+| Method | Endpoint                     | Description             | Access               |
+| ------ | ---------------------------- | ----------------------- | -------------------- |
+| GET    | `/api/wallets`               | Get wallet details      | Private              |
+| POST   | `/api/wallets/fund`          | Fund wallet             | Private              |
+| POST   | `/api/wallets/withdraw`      | Withdraw from wallet    | Private              |
+| DELETE | `/api/wallets/:id`           | Delete wallet           | Admin                |
+| POST   | `/api/ride/payment/:id`      | Pay for a ride          | Private              |
+| PUT    | `/api/ride/:id/confirm-cash` | Confirm cash payment    | Rider, Driver, Admin |
+| POST   | `/api/payment/verify`        | Verify Paystack payment | Private              |
+| POST   | `/api/payment/webhook`       | Handle payment webhook  | Public               |
+
+
+## Notification Routes
+| Method | Endpoint                           | Description                 | Access  |
+| ------ | ---------------------------------- | --------------------------- | ------- |
+| POST   | `/api/notifications/broadcast`     | Send broadcast notification | Admin   |
+| POST   | `/api/notifications/resend/:id`    | Resend notification         | Admin   |
+| GET    | `/api/notifications`               | Get user notifications      | Private |
+| PUT    | `/api/notifications/:id/read`      | Mark as read                | Private |
+| PUT    | `/api/notifications/mark-all-read` | Mark all as read            | Private |
+| DELETE | `/api/notifications/:id`           | Delete notification         | Private |
+
+
+## Notification Preference Routes
+| Method | Endpoint                        | Description        | Access  |
+| ------ | ------------------------------- | ------------------ | ------- |
+| GET    | `/api/notification/preferences` | Get preferences    | Private |
+| PUT    | `/api/notification/preferences` | Update preferences | Private |
+| DELETE | `/api/notification/preferences` | Reset preferences  | Private |
+
+
+
+
+
+## Example .env Configuration
+
+Create a .env file in the root directory with the following keys:
+  # === SERVER CONFIG ===
+  PORT=
+
+  # === DATABASE ===
+  MONGO_URI=
+
+  # === JWT AUTH ===
+  JWT_SECRET=
+
+  # === EMAIL SERVICE (optional, for OTP or reset links) ===
+  SMTP_HOST=
+  SMTP_PORT=
+  SMTP_USER=
+  SMTP_PASS=
+
+  # === TWILIO SMS CONFIG ===
+  TWILIO_ACCOUNT_SID=
+  TWILIO_AUTH_TOKEN=
+  TWILIO_PHONE_NUMBER=
+
+  # === TERMII SMS CONFIG ===
+  TERMII_API_KEY=
+  TERMII_SENDER=
+
+  # === PLATFORM SETTINGS ===
+  PLATFORM_COMMISSION_PERCENT=
+  PLATFORM_USER_ID=
+
+  # === PAYMENT CONFIG ===
+  PAYSTACK_SECRET_KEY=
+
+
 
 
 
