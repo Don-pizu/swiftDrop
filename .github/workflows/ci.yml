@@ -50,5 +50,5 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
-          tags: docker.io/${{ secrets.DOCKERHUB_USERNAME }}/swiftdrop-auth:${{ github.sha }}
+          tags: docker.io/${{ secrets.DOCKERHUB_USERNAME }}/swiftdrop:${{ github.sha }}
           file: ./Dockerfile

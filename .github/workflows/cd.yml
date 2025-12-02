@@ -20,11 +20,8 @@ jobs:
 
       - name: Build & Push Images
         run: |
-          SERVICES="auth-service ride-service payment-service notification-service"
-          for SERVICE in $SERVICES; do
-            docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/$SERVICE:latest ./$SERVICE
-            docker push ${{ secrets.DOCKERHUB_USERNAME }}/$SERVICE:latest
-          done
+            docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/swiftdrop:latest .
+            docker push ${{ secrets.DOCKERHUB_USERNAME }}/swiftdrop:latest
 
       - name: Set up kubectl
         run: |
