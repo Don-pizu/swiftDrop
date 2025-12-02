@@ -29,7 +29,6 @@ exports.protect = async (req, res, next) => {
 	}
 
 	if (!token) {
-		  console.error("JWT error:", error.message);
 		return res.status(401).json({ message: 'Not Authorized, No token' });
 	}
 };

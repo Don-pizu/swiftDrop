@@ -11,11 +11,14 @@ It provides features for **user authentication, ride requests, driver onboarding
 **Authentication & Authorization**
   - JWT-based login/registration for riders & drivers.
   - OTP verification flow for secure onboarding.
-  - Role-based access control (User, Admin, Rider, Driver)
+  - Role-based access control (User, Admin, Rider, Driver).
+  - Secure password hashing using bcrypt.
 
 **Ride Management**
   - Request, accept and cancel rides.
   - Real-time trip updates.
+  - Live driver location mapping.
+  - Nearby driver matching (geo-queries).
 
 **Driver KYC**
   - Document and photo upload for verification.
@@ -54,28 +57,126 @@ node server.js
 
 
 project-root/
-│   ├── config/        # Environment & database config
-│   ├── controllers/   # Route handlers
-│   ├── middlewares/   # Auth & request validation
-│   ├── models/        # Mongoose schemas
-│   ├── routes/        # API endpoints
-│   └── utils/         # Helper functions
-├── .env.example       # Example environment variables
+│
+├── .github/
+│   └── workflows/
+│       ├── ci.yml                  # Continuous Integration
+│       ├── cd.yml                  # Continuous Deployment
+│       └── deploy-aws.yml          # Deploy to AWS (EKS)
+│
+├── config/                         # App & database configuration
+│   ├── db.js
+│   └── firebase.js
+│
+├── controllers/                    # Route controllers (business logic)
+│   ├── authController.js
+│   ├── driverController.js
+│   ├── kycController.js
+│   ├── notificationController.js
+│   ├── notificationPreferenceController.js
+│   ├── paymentController.js
+│   ├── pushController.js
+│   ├── rideController.js
+│   └── walletController.js
+│
+├── infra/
+│   └── eks/
+│       └── swiftdrop-eks-cluster.yaml   # AWS EKS cluster definition
+│
+├── k8s/                              # Kubernetes deployment manifests
+│   ├── app-secret.yaml
+│   ├── deployment.yaml
+│   ├── mongo-deployment.yaml
+│   ├── mongo-service.yaml
+│   ├── redis-deployment.yaml
+│   └── redis-service.yaml
+│
+├── middlewares/                     # Security & validation
+│   ├── authMiddleware.js
+│   └── upload.js
+│
+├── models/                          # MongoDB schemas
+│   ├── chat.js
+│   ├── driver.js
+│   ├── KYC.js
+│   ├── notification.js
+│   ├── notificationPreference.js
+│   ├── ride.js
+│   ├── User.js
+│   └── wallet.js
+│
+├── queues/                          # BullMQ + Redis job queues
+│   ├── workers/
+│   │   └── notificationWorker.js
+│   └── notificationQueue.js
+│
+├── routes/                          # API route definitions
+│   ├── authRoutes.js
+│   ├── driverRoutes.js
+│   ├── kycRoutes.js
+│   ├── notificationPreferenceRoutes.js
+│   ├── notificationRoutes.js
+│   ├── paymentRoutes.js
+│   ├── rideRoutes.js
+│   └── walletRoutes.js
+│
+├── util/                            # Utilities & helper modules
+│   ├── chatService.js
+│   ├── driverPresence.js
+│   ├── emailService.js
+│   ├── fareCalculator.js
+│   ├── notificationHelper.js
+│   ├── otpService.js
+│   ├── phoneFormatter.js
+│   ├── redis.js
+│   ├── smsWhatsappService.js
+│   ├── socketMapping.js
+│   ├── testRedis.js
+│   └── voiceService.js
+│
+├── .env                             # Local environment variables
+├── docker.env                       # Docker-only environment variables
+├── Dockerfile                       # Production Dockerfile
+├── docker-compose.yml               # For local dev or small deployments
+│
+├── app.js                           # App initialization (middleware & config)
+├── server.js                        # Server entry point
+├── swagger.js                       # Swagger documentation setup
 ├── package.json
 └── README.md
 
 
 
+
+
+
 ## Technologies used
--Node.js
--multer
--Express.js
--MongoDB
--JWT Authentication
--Bcrypt.js (password hashing)
--Crypto
--dotenv (environment variables)
--Helmet, Express-rate-limit, Mongo-sanitize, XSS-clean (security)
+# Backend
+- Node.js
+- Express.js
+- Multer (file uploads)
+- Mongoose (MongoDB ODM)
+
+# Authentication & Security
+- JWT Authentication
+- Bcrypt.js (password hashing)
+- Crypto
+- dotenv
+- Helmet
+- Express-rate-limit
+- Mongo-sanitize
+- XSS-clean
+
+# Queue & Realtime
+- Redis (caching, driver presence, job queues)
+- BullMQ (queues)
+- Socket.io (real-time ride/driver updates)
+
+# Integrations
+- Firebase (push notifications)
+- Paystack
+- SMS/WhatsApp service
+- Email servicerity)
 
 
 
@@ -197,6 +298,17 @@ Create a .env file in the root directory with the following keys:
 
   # === PAYMENT CONFIG ===
   PAYSTACK_SECRET_KEY=
+
+  # === REDIS CONFIG ===
+  REDIS_HOST=
+  REDIS_PORT=
+  REDIS_PASS=
+
+  # === EMAIL SERVICE ===
+  MAIL_HOST=
+  MAIL_PORT=
+  MAIL_USER=
+  MAIL_PASS=
 
 
 

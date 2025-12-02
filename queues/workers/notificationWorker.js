@@ -14,11 +14,11 @@ const { getSocketIdForUser } = require('../../util/socketMapping');
 
 //  Nodemailer transporter setup
 const transporter = nodemailer.createTransport({
-  host: process.env.MAIL_HOST || 'sandbox.smtp.mailtrap.io',            
-  port: process.env.MAIL_PORT || 2525,
+  host: process.env.SMTP_HOST || 'sandbox.smtp.mailtrap.io',            
+  port: process.env.SMTP_PORT || 2525,
   auth: {
-    user: process.env.MAIL_USER,
-    pass: process.env.MAIL_PASS
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS
   }
 });
 

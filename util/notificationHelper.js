@@ -23,6 +23,7 @@ const rideNotification = async (ride, status) => {
       in_progress: ['push'],
       completed: ['push',   'email', 'sms'],
       cancelled: ['push', 'sms'],
+      timeout: ['push', 'sms'],
     };
 
     // Define notification message templates per status
@@ -58,6 +59,10 @@ const rideNotification = async (ride, status) => {
       cancelled: {
         title: 'Ride Cancelled',
         body: 'Your ride has been cancelled.',
+      },
+      timeout: {
+        title: 'Trip Timeout',
+        body: 'Your trip as timeout',
       },
     };
 

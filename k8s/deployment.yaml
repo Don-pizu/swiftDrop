@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: swiftdrop-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: swiftdrop-app
+  template:
+    metadata:
+      labels:
+        app: swiftdrop-app
+    spec:
+      containers:
+        - name: swiftdrop-app
+          image: devasiru/swiftdrop:latest
+          ports:
+            - containerPort: 5000
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "250m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+          env:
+            - name: NODE_ENV
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret
+                  key: NODE_ENV
+
+            - name: PORT
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret
+                  key: PORT
+
+            - name: MONGO_URI
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret
+                  key: MONGO_URI
+
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret
+                  key: JWT_SECRET
+
+            - name: REDIS_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret
+                  key: REDIS_HOST
+
+            - name: REDIS_DB_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret
+                  key: REDIS_DB_PORT
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: swiftdrop-service
+spec:
+  selector:
+    app: swiftdrop-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 5000
+  type: LoadBalancer

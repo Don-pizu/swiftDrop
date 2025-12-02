@@ -1,6 +1,9 @@
 //app.js
 
-require('dotenv').config();
+if (process.env.NODE_ENV !== "production") {
+    require("dotenv").config();
+}
+
 
 const express = require('express');
 const app = express();
@@ -26,6 +29,7 @@ const paymentRoutes = require('./routes/paymentRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
 const notificationPreferenceRoutes = require('./routes/notificationPreferenceRoutes');
 
+const { swaggerUi, swaggerSpec } = require('./swagger');
 
 
 //DB connection
@@ -142,5 +146,8 @@ app.use('/api', walletRoutes);
 app.use('/api', paymentRoutes);
 app.use('/api', notificationRoutes);
 app.use('/api', notificationPreferenceRoutes);
+
+// Swagger docs route
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 module.exports = app;

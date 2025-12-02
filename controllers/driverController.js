@@ -3,6 +3,7 @@
 
 const User = require('../models/User');
 const Driver = require('../models/driver');
+const { updateDriverLocation, removeDriver, findNearbyDrivers } = require('../util/driverPresence');
 
 
 //POST  Create rider/driver profile (linked to User)
@@ -148,6 +149,12 @@ exports.updateDriverStatus = async (req, res) => {
       });
     }
 
+    //getting driver status fast using redis
+    if (driver.status === 'offline') {
+		  await removeDriver(driver._id.toString());
+		} else {
+		  await updateDriverLocation(driver._id.toString(), lng, lat, driver.status);
+		}
 
     // Update status if valid
     if (status) 
@@ -171,29 +178,19 @@ exports.updateDriverStatus = async (req, res) => {
 // Find nearby riders/drivers (for testing / rider matching)
 exports.findNearbyDrivers = async (req, res) => {
   try {
-    const { lng, lat, role, maxDistance = 5000 } = req.query;     //maxDistance = 5000 means 5km
+    const { lng, lat, role, radius = 5 } = req.query;     //maxDistance = 5000 means 5km
 
     // Validate coordinates
     if (!lng || !lat || isNaN(parseFloat(lng)) || isNaN(parseFloat(lat))) 
       return res.status(400).json({ message: 'Please provide valid lng and lat query parameters' });
     
+    const nearby = await findNearbyDrivers(parseFloat(lng), parseFloat(lat), parseFloat(radius));
 
-    const drivers = await Driver.find({
-      status: 'available',
-      location: {
-        $near: {
-          $geometry: { type: 'Point', coordinates: [parseFloat(lng), parseFloat(lat)] },
-          $maxDistance: parseInt(maxDistance)
-        }
-      }
-    })
-		.populate('user', 'fullname phoneNumber role')   //get user info
-	    .limit(10);
-
-	// filter by role if passed
-    const filtered = role ? drivers.filter(d => d.user.role === role) : drivers;
-
-    res.json(filtered);
+    res.json({
+      success: true,
+      count: nearby.length,
+      nearby
+    });
 
   } catch (err) {
    res.status(500).json({ message: err.message || 'Internal server error' });
@@ -222,3 +219,26 @@ exports.deleteDriver = async (req, res, next) => {
 		res.status(500).json({ message: err.message || 'Internal server error' });
 	}
 }
+
+
+
+
+ //mongoDB Query
+    /*
+    const drivers = await Driver.find({
+      status: 'available',
+      location: {
+        $near: {
+          $geometry: { type: 'Point', coordinates: [parseFloat(lng), parseFloat(lat)] },
+          $maxDistance: parseInt(maxDistance)
+        }
+      }
+    })
+		.populate('user', 'fullname phoneNumber role')   //get user info
+	    .limit(10);
+
+	// filter by role if passed
+    const filtered = role ? drivers.filter(d => d.user.role === role) : drivers;
+
+    res.json(filtered);
+   */

@@ -81,8 +81,12 @@ exports.getUserNotifications = async (req, res) => {
 											    .sort({ createdAt: -1 })
 											    .limit(50);
 
-		if (notifications.length === 0)
+		if (!notifications)
 			return res.status(404).json({ message: 'Notification is not found'});
+
+
+		if (notifications.length === 0)
+			return res.status(404).json({ message: 'There is no Notification'});
 
 	  	res.json(notifications);
 	} catch (err) {

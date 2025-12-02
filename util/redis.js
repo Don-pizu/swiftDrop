@@ -5,9 +5,12 @@
 const { Queue, Worker, QueueScheduler } = require('bullmq');
 const IORedis = require('ioredis');
 
+const redisPort = Number(process.env.REDIS_DB_PORT) || 6379;
+
+
 const connectionRedis = new IORedis({   //new IORedis('redis://127.0.0.1:6379');
-  host: process.env.REDIS_HOST,
-  port: process.env.REDIS_PORT,
+  host: process.env.REDIS_HOST || "127.0.0.1",
+  port: redisPort,
   password: process.env.REDIS_PASS || undefined,    //for development
   maxRetriesPerRequest: null,   // ✅ REQUIRED for BullMQ
   enableReadyCheck: false       // ✅ prevents "Ready check" errors
