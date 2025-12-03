@@ -18,7 +18,7 @@ const options = {
         description: 'Local server',
       },
       {
-        url: 'https://onrender.com/api', // for deployment
+        url: 'https://swiftdrop-d7zh.onrender.com', // for deployment 
         description: 'Production server',
       },
     ],
