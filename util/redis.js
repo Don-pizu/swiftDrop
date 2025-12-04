@@ -23,7 +23,6 @@ if (process.env.REDIS_URL) {
     password: process.env.REDIS_PASS || undefined,     //for development
     maxRetriesPerRequest: null,     // ✅ REQUIRED for BullMQ
     enableReadyCheck: false         // ✅ prevents "Ready check" errors
-});
   });
 }
 
